@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiempos en Vivo - Baja Atacama Series</title>
+    <style>
+        :root {
+            --bg-color: #0b0b0c;
+            --card-bg: rgba(30, 30, 30, 0.75);
+            --accent-color: #ffb703; /* Amarillo Competencia */
+            --text-color: #ffffff;
+            --text-muted: #aaaaaa;
+            --dnf-color: #ff4d4d; 
+            --dns-color: #ff9f1c;
+            --total-color: #00f0ff;
+            --glow-shadow: 0 0 15px rgba(255, 183, 3, 0.2);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            padding: 15px 8px 80px 8px; 
+            background-image: radial-gradient(circle at top right, rgba(255, 183, 3, 0.05), transparent 40%),
+                              radial-gradient(circle at bottom left, rgba(0, 240, 255, 0.03), transparent 40%);
+            background-attachment: fixed;
+        }
+        
+        /* Contenedor Principal del Header */
+        .header-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto 20px auto;
+            padding: 10px;
+            gap: 15px;
+        }
+
+        /* Contenedores de Logos */
+        .logo-box img {
+            max-height: 80px;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+            transition: transform 0.3s ease;
+        }
+        .logo-box img:hover {
+            transform: scale(1.04) rotate(-1deg);
+        }
+
+        /* Contenedor del Logo 2 en Móvil */
+        .mobile-footer-logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 15px 0;
+            margin-top: 25px;
+        }
+        .mobile-footer-logo img {
+            max-height: 70px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .header-container .logo-right { display: none; }
+
+        /* Bloque de Títulos */
+        .title-box { text-align: center; }
+        .title-box h1 { 
+            font-size: 1.5rem; 
+            color: var(--accent-color); 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px;
+            text-shadow: 0 2px 10px rgba(255, 183, 3, 0.3);
+        }
+        .title-box p { font-size: 0.85rem; color: var(--text-muted); margin-top: 5px; font-weight: 500; }
+        
+        /* Controles e indicador de Sincronización */
+        .sync-container { display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; }
+        
+        .refresh-btn { 
+            background: #ffb703; 
+            border: none; 
+            color: #000; 
+            padding: 10px 18px; 
+            border-radius: 6px; 
+            font-size: 0.8rem; 
+            font-weight: bold; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            box-shadow: 0 4px 12px rgba(255, 183, 3, 0.3);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        .refresh-btn:hover { 
+            background: #fff; 
+            box-shadow: 0 6px 20px rgba(255, 183, 3, 0.5);
+            transform: translateY(-2px);
+        }
+        .refresh-btn:active { transform: translateY(0); }
+        
+        .sync-alert { 
+            font-size: 0.75rem; 
+            font-weight: bold; 
+            color: #2a9d8f; 
+            opacity: 0; 
+            transform: scale(0.9);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            padding: 6px 12px; 
+            border-radius: 4px; 
+            background: rgba(42, 157, 143, 0.15);
+            border: 1px solid rgba(42, 157, 143, 0.3);
+        }
+        .sync-alert.show { opacity: 1; transform: scale(1); animation: pulseGlow 1.5s infinite; }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(42, 157, 143, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(42, 157, 143, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(42, 157, 143, 0); }
+        }
+
+        /* Filtros y Selectores */
+        .filter-section-title { font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); text-align: center; margin-bottom: 6px; letter-spacing: 1.2px; font-weight: 700; width: 100%; }
+        .filter-container { display: flex; justify-content: center; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; width: 100%; max-width: 700px; margin-left: auto; margin-right: auto; }
+        
+        .filter-btn { 
+            background: rgba(255,255,255,0.04); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            color: #fff; 
+            padding: 7px 14px; 
+            border-radius: 20px; 
+            font-size: 0.75rem; 
+            font-weight: bold; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            transition: all 0.2s ease; 
+        }
+        .filter-btn:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); }
+        .filter-btn.active { background-color: #fff; color: #000; border-color: #fff; box-shadow: 0 4px 12px rgba(255,255,255,0.25); }
+        
+        .stage-btn.active { background-color: var(--total-color); color: #000; border-color: var(--total-color); box-shadow: 0 4px 12px rgba(0, 240, 255, 0.3); }
+
+        /* Banner de Categoría Actual */
+        .general-banner { 
+            background: var(--accent-color); 
+            padding: 11px; 
+            text-align: center; 
+            font-weight: 800; 
+            color: #000; 
+            border-radius: 6px; 
+            text-transform: uppercase; 
+            font-size: 0.85rem; 
+            letter-spacing: 1.5px; 
+            margin-bottom: 12px; 
+            width: 100%; 
+            max-width: 1000px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            box-shadow: var(--glow-shadow);
+        }
+
+        /* Contenedor de Tabla con Glassmorphism (Efecto Cristal) */
+        .table-container { 
+            background: var(--card-bg); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 12px; 
+            padding: 8px; 
+            overflow-x: auto; 
+            -webkit-overflow-scrolling: touch; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6); 
+            width: 100%; 
+            max-width: 1000px; 
+            margin-left: auto; 
+            margin-right: auto; 
+        }
+        
+        .results-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.8rem; white-space: nowrap; }
+        .results-table th { background-color: rgba(0,0,0,0.3); color: var(--accent-color); padding: 12px 8px; text-transform: uppercase; font-size: 0.7rem; border-bottom: 2px solid rgba(255,255,255,0.1); letter-spacing: 0.5px; transition: all 0.3s ease; }
+        .results-table td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; transition: all 0.25s ease; }
+        
+        /* Animación suave para cuando cambian de posición las filas */
+        .results-table tbody tr { animation: fadeInRow 0.4s ease forwards; }
+        .results-table tr:nth-child(even) { background-color: rgba(255,255,255,0.01); }
+        .results-table tr:hover td { background-color: rgba(255,255,255,0.03); color: #fff; }
+
+        @keyframes fadeInRow {
+            from { opacity: 0.6; transform: translateY(2px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Resaltado Animado de la Columna Activa */
+        .col-active { background-color: rgba(0, 240, 255, 0.03) !important; color: #fff !important; }
+        th.col-active { color: var(--total-color) !important; border-bottom: 2px solid var(--total-color) !important; }
+
+        /* Estilos de Celdas Específicas */
+        .pos-cell { font-weight: bold; color: var(--accent-color); width: 40px; text-align: center; font-size: 0.85rem; }
+        .num-cell { font-weight: 800; color: #fff; width: 48px; text-align: center; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 5px; padding: 4px 0; box-shadow: inset 0 1px 3px rgba(255,255,255,0.1); }
+        
+        .status-dnf { color: var(--dnf-color); font-weight: bold; animation: pulseAlert 2s infinite; }
+        .status-dns { color: var(--dns-color); font-weight: bold; }
+        .total-cell { font-weight: bold; color: var(--total-color); text-shadow: 0 0 8px rgba(0, 240, 255, 0.2); }
+        
+        .loading, .error-msg { text-align: center; padding: 35px; color: var(--accent-color); font-weight: bold; font-size: 0.9rem; letter-spacing: 1px; }
+        .error-msg { color: var(--dnf-color); }
+
+        /* Media Query para pantallas de PC y Tablets */
+        @media (min-width: 768px) {
+            body { padding: 20px; }
+            
+            .header-container {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px 0;
+            }
+            
+            .logo-box img { max-height: 95px; }
+            .header-container .logo-right { display: block; }
+            .mobile-footer-logo { display: none; }
+
+            .title-box { text-align: left; flex-grow: 1; margin-left: 25px; }
+            .title-box h1 { font-size: 1.9rem; }
+            .title-box p { font-size: 0.95rem; }
+            
+            .sync-container { justify-content: flex-end; }
+
+            .results-table { font-size: 0.85rem; }
+            .results-table th { font-size: 0.75rem; padding: 14px 10px; }
+            .results-table td { padding: 12px 10px; }
+            .filter-btn { font-size: 0.8rem; padding: 8px 18px; }
+            .general-banner { font-size: 0.95rem; padding: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CONTENEDOR SUPERIOR CON LOGOS Y TÍTULOS -->
+    <div class="header-container">
+        <div class="logo-box logo-left">
+            <img src="1.png" alt="Baja Atacama Logo Principal">
+        </div>
+        
+        <div class="title-box">
+            <h1>Baja Atacama Series</h1>
+            <p>Control de Tiempos Oficiales en Vivo</p>
+        </div>
+
+        <div class="sync-container">
+            <button class="refresh-btn" onclick="cargarDatosDesdeGoogle()">🔄 Sincronizar Ahora</button>
+            <span id="sync-status" class="sync-alert">✔ Sincronizado</span>
+        </div>
+
+        <div class="logo-box logo-right">
+            <img src="2.png" alt="Baja Atacama Logo Secundario">
+        </div>
+    </div>
+
+    <!-- SECCIÓN DE FILTROS -->
+    <div class="filter-section-title">Filtrar por Categoría</div>
+    <div class="filter-container" id="category-filters">
+        <button class="filter-btn active" onclick="setCategoria('TODOS')">Todos</button>
+    </div>
+
+    <div class="filter-section-title">Ver Etapa / Clasificación</div>
+    <div class="filter-container" id="stage-filters">
+        <button class="filter-btn stage-btn active" onclick="setEtapa('TOTAL')">Clasificación General (Total)</button>
+        <button class="filter-btn stage-btn" onclick="setEtapa('1EE')">Solo 1° EE</button>
+        <button class="filter-btn stage-btn" onclick="setEtapa('2EE')">Solo 2° EE</button>
+    </div>
+
+    <div class="general-banner" id="banner-text">Final General - Todos</div>
+
+    <!-- TABLA DE RESULTADOS -->
+    <div class="table-container">
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th>Pos</th>
+                    <th>N°</th>
+                    <th>Piloto</th>
+                    <th>Cat</th>
+                    <th id="th-ee1">1EE</th>
+                    <th id="th-ee2">2EE</th>
+                    <th id="th-total">Total</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <tr><td colspan="7" class="loading">Cargando cronometrajes...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- CONTENEDOR LOGO INFERIOR EN MÓVIL -->
+    <div class="mobile-footer-logo">
+        <img src="2.png" alt="Baja Atacama Logo Secundario Móvil">
+    </div>
+
+    <script>
+        const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQoFKsuKTYMSXsAAztTFb2rL9AmulXDloYyyQ0TKfqI0XvMjp5mGqSUxNUyQFtUnW65q-98NEUrQ8Nt/pub?gid=286931895&single=true&output=csv";
+
+        let pilotosMaster = [];
+        let categoriasDetectadas = new Set();
+        let categoriaActual = 'TODOS';
+        let etapaActual = 'TOTAL';
+
+        async function cargarDatosDesdeGoogle() {
+            try {
+                const response = await fetch(SHEET_CSV_URL + "&cachebust=" + new Date().getTime());
+                if (!response.ok) throw new Error("No se pudo obtener respuesta de Google Sheets");
+                
+                const dataText = await response.text();
+                pilotosMaster = csvToArray(dataText);
+                
+                if (pilotosMaster.length === 0) {
+                    document.getElementById('table-body').innerHTML = `<tr><td colspan='7' class='error-msg'>⚠️ Estructura incorrecta o sin datos válidos en la hoja.</td></tr>`;
+                    return;
+                }
+                
+                generarBotonesCategorias();
+                mostrarAlertaSincronizacion();
+                renderizarTabla();
+            } catch (error) {
+                console.error("Error crítico de sincronización:", error);
+                document.getElementById('table-body').innerHTML = `<tr><td colspan='7' class='error-msg'>❌ Error de sincronización. Verifica tu conexión o el enlace de publicación.</td></tr>`;
+            }
+        }
+
+        function csvToArray(text) {
+            const lines = text.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
+            const result = [];
+            
+            let headerIdx = -1;
+            let separator = ',';
+
+            for (let i = 0; i < lines.length; i++) {
+                const lineUpper = lines[i].toUpperCase();
+                if (lineUpper.includes('PILOTO') && (lineUpper.includes('N°') || lineUpper.includes('NUMERO') || lineUpper.includes('Nº'))) {
+                    headerIdx = i;
+                    separator = lines[i].includes(';') ? ';' : ',';
+                    break;
+                }
+            }
+
+            if (headerIdx === -1) return [];
+
+            const headers = lines[headerIdx].split(separator).map(h => h.trim().toUpperCase().replace(/["']/g, ""));
+            
+            const idxNum = headers.findIndex(h => h.includes('N°') || h.includes('NUMERO') || h.includes('Nº') || h === 'N');
+            const idxPiloto = headers.findIndex(h => h.includes('PILOTO'));
+            const idxCat = headers.findIndex(h => h.includes('CAT'));
+            const idxEE1 = headers.findIndex(h => h.includes('1EE') || h.includes('1° EE') || h.includes('EE1'));
+            const idxEE2 = headers.findIndex(h => h.includes('2EE') || h.includes('2° EE') || h.includes('EE2'));
+
+            categoriasDetectadas.clear();
+
+            for (let i = headerIdx + 1; i < lines.length; i++) {
+                const cols = lines[i].split(separator).map(c => c.trim().replace(/["']/g, ""));
+                
+                const vehiculoNum = cols[idxNum] || "";
+                if (!vehiculoNum || vehiculoNum === "-" || isNaN(vehiculoNum.replace(/[^0-9]/g, ''))) continue;
+
+                const pilotoNombre = cols[idxPiloto] || "";
+                if (!pilotoNombre || pilotoNombre.toUpperCase().includes("PILOTO")) continue;
+
+                let categoriaOriginal = idxCat !== -1 && cols[idxCat] ? cols[idxCat] : "SIN CAT";
+                if (categoriaOriginal && categoriaOriginal !== "-") {
+                    categoriasDetectadas.add(categoriaOriginal);
+                }
+
+                result.push({
+                    num: vehiculoNum,
+                    piloto: pilotoNombre,
+                    cat: categoriaOriginal,
+                    ee1: idxEE1 !== -1 && cols[idxEE1] ? cols[idxEE1] : "",
+                    ee2: idxEE2 !== -1 && cols[idxEE2] ? cols[idxEE2] : ""
+                });
+            }
+            return result;
+        }
+
+        function generarBotonesCategorias() {
+            const container = document.getElementById('category-filters');
+            let html = `<button class="filter-btn ${categoriaActual === 'TODOS' ? 'active' : ''}" onclick="setCategoria('TODOS')">Todos</button>`;
+            const sortedCategories = Array.from(categoriasDetectadas).sort();
+            
+            sortedCategories.forEach(cat => {
+                html += `<button class="filter-btn ${categoriaActual === cat ? 'active' : ''}" onclick="setCategoria('${cat}')">${cat}</button>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function mostrarAlertaSincronizacion() {
+            const alertBox = document.getElementById('sync-status');
+            alertBox.classList.add('show');
+            setTimeout(() => { alertBox.classList.remove('show'); }, 3000);
+        }
+
+        function timeToSeconds(timeStr) {
+            if (!timeStr) return null;
+            const cleaned = timeStr.toUpperCase().trim();
+            if (['DNF', 'DNS', '-', '00:00:00', '0'].includes(cleaned)) return null;
+            
+            const parts = cleaned.split(':');
+            if(parts.length < 2) return null;
+            return parseInt(parts[0], 10) * 3600 + parseInt(parts[1], 10) * 60 + parseInt(parts[2] || 0, 10);
+        }
+
+        function secondsToTime(secs) {
+            if (secs === null || isNaN(secs)) return "00:00:00";
+            const hrs = Math.floor(secs / 3600);
+            const mins = Math.floor((secs % 3600) / 60);
+            const seconds = secs % 60;
+            return [hrs, mins, seconds].map(v => v < 10 ? "0" + v : v).join(":");
+        }
+
+        function getValorEtapaFiltro(p) {
+            if (etapaActual === '1EE') return p.ee1.toUpperCase().trim();
+            if (etapaActual === '2EE') return p.ee2.toUpperCase().trim();
+            
+            const e1 = p.ee1.toUpperCase().trim();
+            const e2 = p.ee2.toUpperCase().trim();
+            if (e1 === 'DNF' || e2 === 'DNF') return 'DNF';
+            if (e1 === 'DNS' || e2 === 'DNS') return 'DNS';
+
+            const t1 = timeToSeconds(p.ee1);
+            const t2 = timeToSeconds(p.ee2);
+            
+            let sumaSegundos = 0;
+            let tieneTiempos = false;
+
+            if (t1 !== null) { sumaSegundos += t1; tieneTiempos = true; }
+            if (t2 !== null) { sumaSegundos += t2; tieneTiempos = true; }
+            
+            if (tieneTiempos) return secondsToTime(sumaSegundos);
+            return "-";
+        }
+
+        function ordenarPilotos(a, b) {
+            const valA = getValorEtapaFiltro(a); 
+            const valB = getValorEtapaFiltro(b); 
+
+            const getPeso = (val) => {
+                if (val === '-' || val === '') return 1;    
+                if (val === 'DNS') return 2;  
+                if (val === 'DNF') return 3;  
+                return 0;                     
+            };
+
+            const pesoA = getPeso(valA);
+            const pesoB = getPeso(valB);
+
+            if (pesoA !== pesoB) return pesoA - pesoB; 
+            return valA.localeCompare(valB);
+        }
+
+        function setCategoria(cat) {
+            categoriaActual = cat;
+            document.querySelectorAll('#category-filters .filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText === cat);
+            });
+            actualizarBanner();
+            renderizarTabla();
+        }
+
+        function setEtapa(etapa) {
+            etapaActual = etapa;
+            const botones = document.querySelectorAll('#stage-filters .stage-btn');
+            botones[0].classList.toggle('active', etapa === 'TOTAL');
+            botones[1].classList.toggle('active', etapa === '1EE');
+            botones[2].classList.toggle('active', etapa === '2EE');
+            
+            actualizarBanner();
+            renderizarTabla();
+        }
+
+        function actualizarBanner() {
+            let textoEtapa = "Clasificación General";
+            if(etapaActual === '1EE') textoEtapa = "Clasificación 1° EE";
+            if(etapaActual === '2EE') textoEtapa = "Clasificación 2° EE";
+            
+            document.getElementById('banner-text').innerText = `${textoEtapa} - ${categoriaActual}`;
+        }
+
+        function renderizarTabla() {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = "";
+
+            if(pilotosMaster.length === 0) return;
+
+            document.getElementById('th-ee1').className = etapaActual === '1EE' ? 'col-active' : '';
+            document.getElementById('th-ee2').className = etapaActual === '2EE' ? 'col-active' : '';
+            document.getElementById('th-total').className = etapaActual === 'TOTAL' ? 'col-active' : '';
+
+            let lista = pilotosMaster.filter(p => {
+                if (categoriaActual === 'TODOS') return true;
+                return p.cat === categoriaActual;
+            });
+            
+            lista.sort((a, b) => ordenarPilotos(a, b));
+
+            lista.forEach((item, index) => {
+                let rowHtml = `<tr>`;
+                
+                let valorCriterio = getValorEtapaFiltro(item);
+                let posDisplay = ['DNF', 'DNS', '-', ''].includes(valorCriterio) ? '-' : (index + 1);
+
+                let e1 = item.ee1.toUpperCase().trim();
+                let e2 = item.ee2.toUpperCase().trim();
+                let totalAcumulado = 'DNF';
+                if (e1 !== 'DNF' && e2 !== 'DNF') {
+                    if (e1 === 'DNS' || e2 === 'DNS') {
+                        totalAcumulado = 'DNS';
+                    } else {
+                        let t1 = timeToSeconds(item.ee1);
+                        let t2 = timeToSeconds(item.ee2);
+                        if (t1 !== null || t2 !== null) {
+                            totalAcumulado = secondsToTime((t1 || 0) + (t2 || 0));
+                        } else {
+                            totalAcumulado = '-';
+                        }
+                    }
+                }
+
+                rowHtml += `<td class="pos-cell">${posDisplay}</td>`;
+                rowHtml += `<td><div class="num-cell">${item.num}</div></td>`;
+                rowHtml += `<td>${item.piloto}</td>`;
+                rowHtml += `<td>${item.cat}</td>`;
+                rowHtml += `<td class="${etapaActual === '1EE' ? 'col-active' : ''} ${getStatusClass(item.ee1)}">${item.ee1 || "-"}</td>`;
+                rowHtml += `<td class="${etapaActual === '2EE' ? 'col-active' : ''} ${getStatusClass(item.ee2)}">${item.ee2 || "-"}</td>`;
+                rowHtml += `<td class="total-cell ${etapaActual === 'TOTAL' ? 'col-active' : ''} ${getStatusClass(totalAcumulado)}">${totalAcumulado}</td>`;
+                rowHtml += `</tr>`;
+                
+                tbody.innerHTML += rowHtml;
+            });
+        }
+
+        function getStatusClass(value) {
+            if (!value) return '';
+            const val = value.toUpperCase().trim();
+            if (val === 'DNF') return 'status-dnf';
+            if (val === 'DNS' || val === '-') return 'status-dns';
+            return '';
+        }
+
+        window.onload = function() {
+            cargarDatosDesdeGoogle();
+            setInterval(cargarDatosDesdeGoogle, 30000);
+        };
+    </script>
+</body>
+</html>
