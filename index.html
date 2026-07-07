@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tiempos en Vivo - Baja Atacama Series</title>
+    <title>Tiempos en Vivo y Largada - Baja Atacama Series</title>
     <style>
         :root {
             --bg-color: #0b0b0c;
@@ -15,6 +15,7 @@
             --dns-color: #ff9f1c;
             --total-color: #00f0ff;
             --glow-shadow: 0 0 15px rgba(255, 183, 3, 0.2);
+            --largada-color: #a29bfe; /* Color distintivo para la grilla */
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
@@ -27,7 +28,6 @@
             background-attachment: fixed;
         }
         
-        /* Contenedor Principal del Header */
         .header-container {
             display: flex;
             flex-direction: column;
@@ -40,7 +40,6 @@
             gap: 15px;
         }
 
-        /* Contenedores de Logos */
         .logo-box img {
             max-height: 80px;
             height: auto;
@@ -48,11 +47,7 @@
             filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
             transition: transform 0.3s ease;
         }
-        .logo-box img:hover {
-            transform: scale(1.04) rotate(-1deg);
-        }
 
-        /* Contenedor del Logo 2 en Móvil */
         .mobile-footer-logo {
             display: flex;
             justify-content: center;
@@ -61,15 +56,10 @@
             padding: 15px 0;
             margin-top: 25px;
         }
-        .mobile-footer-logo img {
-            max-height: 70px;
-            height: auto;
-            object-fit: contain;
-        }
+        .mobile-footer-logo img { max-height: 70px; height: auto; object-fit: contain; }
 
         .header-container .logo-right { display: none; }
 
-        /* Bloque de Títulos */
         .title-box { text-align: center; }
         .title-box h1 { 
             font-size: 1.5rem; 
@@ -80,7 +70,6 @@
         }
         .title-box p { font-size: 0.85rem; color: var(--text-muted); margin-top: 5px; font-weight: 500; }
         
-        /* Controles e indicador de Sincronización */
         .sync-container { display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; }
         
         .refresh-btn { 
@@ -101,7 +90,25 @@
             box-shadow: 0 6px 20px rgba(255, 183, 3, 0.5);
             transform: translateY(-2px);
         }
-        .refresh-btn:active { transform: translateY(0); }
+
+        .pdf-btn {
+            background: #2a9d8f;
+            border: none;
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 12px rgba(42, 157, 143, 0.3);
+            transition: all 0.25s ease;
+        }
+        .pdf-btn:hover {
+            background: #e76f51;
+            box-shadow: 0 6px 20px rgba(231, 111, 81, 0.4);
+            transform: translateY(-2px);
+        }
         
         .sync-alert { 
             font-size: 0.75rem; 
@@ -115,15 +122,8 @@
             background: rgba(42, 157, 143, 0.15);
             border: 1px solid rgba(42, 157, 143, 0.3);
         }
-        .sync-alert.show { opacity: 1; transform: scale(1); animation: pulseGlow 1.5s infinite; }
+        .sync-alert.show { opacity: 1; transform: scale(1); }
 
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 0 0 0 rgba(42, 157, 143, 0.4); }
-            70% { box-shadow: 0 0 0 6px rgba(42, 157, 143, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(42, 157, 143, 0); }
-        }
-
-        /* Filtros y Selectores */
         .filter-section-title { font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); text-align: center; margin-bottom: 6px; letter-spacing: 1.2px; font-weight: 700; width: 100%; }
         .filter-container { display: flex; justify-content: center; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; width: 100%; max-width: 700px; margin-left: auto; margin-right: auto; }
         
@@ -139,12 +139,12 @@
             text-transform: uppercase; 
             transition: all 0.2s ease; 
         }
-        .filter-btn:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); }
+        .filter-btn:hover { background: rgba(255,255,255,0.12); }
         .filter-btn.active { background-color: #fff; color: #000; border-color: #fff; box-shadow: 0 4px 12px rgba(255,255,255,0.25); }
         
         .stage-btn.active { background-color: var(--total-color); color: #000; border-color: var(--total-color); box-shadow: 0 4px 12px rgba(0, 240, 255, 0.3); }
+        .stage-btn.active-largada { background-color: var(--largada-color); color: #000; border-color: var(--largada-color); box-shadow: 0 4px 12px rgba(162, 155, 254, 0.4); }
 
-        /* Banner de Categoría Actual */
         .general-banner { 
             background: var(--accent-color); 
             padding: 11px; 
@@ -162,8 +162,8 @@
             margin-right: auto; 
             box-shadow: var(--glow-shadow);
         }
+        .general-banner.banner-largada { background: var(--largada-color); }
 
-        /* Contenedor de Tabla con Glassmorphism (Efecto Cristal) */
         .table-container { 
             background: var(--card-bg); 
             backdrop-filter: blur(12px);
@@ -172,7 +172,6 @@
             border-radius: 12px; 
             padding: 8px; 
             overflow-x: auto; 
-            -webkit-overflow-scrolling: touch; 
             box-shadow: 0 8px 32px rgba(0,0,0,0.6); 
             width: 100%; 
             max-width: 1000px; 
@@ -181,87 +180,164 @@
         }
         
         .results-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.8rem; white-space: nowrap; }
-        .results-table th { background-color: rgba(0,0,0,0.3); color: var(--accent-color); padding: 12px 8px; text-transform: uppercase; font-size: 0.7rem; border-bottom: 2px solid rgba(255,255,255,0.1); letter-spacing: 0.5px; transition: all 0.3s ease; }
-        .results-table td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; transition: all 0.25s ease; }
+        .results-table th { background-color: rgba(0,0,0,0.3); color: var(--accent-color); padding: 12px 8px; text-transform: uppercase; font-size: 0.7rem; border-bottom: 2px solid rgba(255,255,255,0.1); }
+        .results-table td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
         
-        /* Animación suave para cuando cambian de posición las filas */
-        .results-table tbody tr { animation: fadeInRow 0.4s ease forwards; }
-        .results-table tr:nth-child(even) { background-color: rgba(255,255,255,0.01); }
-        .results-table tr:hover td { background-color: rgba(255,255,255,0.03); color: #fff; }
-
-        @keyframes fadeInRow {
-            from { opacity: 0.6; transform: translateY(2px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Resaltado Animado de la Columna Activa */
         .col-active { background-color: rgba(0, 240, 255, 0.03) !important; color: #fff !important; }
         th.col-active { color: var(--total-color) !important; border-bottom: 2px solid var(--total-color) !important; }
-
-        /* Estilos de Celdas Específicas */
-        .pos-cell { font-weight: bold; color: var(--accent-color); width: 40px; text-align: center; font-size: 0.85rem; }
-        .num-cell { font-weight: 800; color: #fff; width: 48px; text-align: center; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 5px; padding: 4px 0; box-shadow: inset 0 1px 3px rgba(255,255,255,0.1); }
         
-        .status-dnf { color: var(--dnf-color); font-weight: bold; animation: pulseAlert 2s infinite; }
+        .col-largada-active { background-color: rgba(162, 155, 254, 0.03) !important; color: #fff !important; }
+        th.col-largada-active { color: var(--largada-color) !important; border-bottom: 2px solid var(--largada-color) !important; }
+
+        .pos-cell { font-weight: bold; color: var(--accent-color); width: 40px; text-align: center; }
+        .num-cell { font-weight: 800; color: #fff; width: 48px; text-align: center; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 5px; padding: 4px 0; }
+        
+        .status-dnf { color: var(--dnf-color); font-weight: bold; }
         .status-dns { color: var(--dns-color); font-weight: bold; }
-        .total-cell { font-weight: bold; color: var(--total-color); text-shadow: 0 0 8px rgba(0, 240, 255, 0.2); }
+        .total-cell { font-weight: bold; color: var(--total-color); }
+        .hora-cell { font-weight: bold; color: #5efc82; font-family: 'Courier New', Courier, monospace; font-size: 0.9rem; }
         
-        .loading, .error-msg { text-align: center; padding: 35px; color: var(--accent-color); font-weight: bold; font-size: 0.9rem; letter-spacing: 1px; }
-        .error-msg { color: var(--dnf-color); }
+        .cat-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
+        .badge-moto { background-color: #fcc419; color: #000; }
+        .badge-t { background-color: #339af0; color: #fff; }
+        .badge-other { background-color: #adb5bd; color: #000; }
 
-        /* Media Query para pantallas de PC y Tablets */
+        .loading, .error-msg { text-align: center; padding: 35px; color: var(--accent-color); font-weight: bold; }
+
         @media (min-width: 768px) {
             body { padding: 20px; }
-            
-            .header-container {
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-                padding: 15px 0;
-            }
-            
+            .header-container { flex-direction: row; justify-content: space-between; align-items: center; }
             .logo-box img { max-height: 95px; }
             .header-container .logo-right { display: block; }
             .mobile-footer-logo { display: none; }
-
             .title-box { text-align: left; flex-grow: 1; margin-left: 25px; }
             .title-box h1 { font-size: 1.9rem; }
-            .title-box p { font-size: 0.95rem; }
-            
             .sync-container { justify-content: flex-end; }
-
             .results-table { font-size: 0.85rem; }
-            .results-table th { font-size: 0.75rem; padding: 14px 10px; }
-            .results-table td { padding: 12px 10px; }
-            .filter-btn { font-size: 0.8rem; padding: 8px 18px; }
-            .general-banner { font-size: 0.95rem; padding: 14px; }
+        }
+
+        @media print {
+            @page {
+                size: letter;
+                margin: 15mm 12mm 15mm 12mm;
+            }
+            body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                padding: 0 !important;
+                background-image: none !important;
+            }
+            .refresh-btn, .pdf-btn, .sync-alert, .filter-section-title, .filter-container {
+                display: none !important;
+            }
+            
+            .mobile-footer-logo {
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+                margin-top: 35px !important;
+                page-break-inside: avoid;
+            }
+            .mobile-footer-logo img {
+                max-height: 65px !important;
+                filter: none !important;
+            }
+
+            .header-container {
+                margin-bottom: 12px !important;
+                border-bottom: 2px solid #000000 !important;
+                padding-bottom: 12px !important;
+            }
+            .title-box h1 {
+                color: #000000 !important;
+                text-shadow: none !important;
+                font-size: 1.6rem !important;
+            }
+            .title-box p { color: #444444 !important; }
+            .logo-box img { filter: none !important; max-height: 75px !important; }
+            
+            .general-banner {
+                background: #e5e5e5 !important;
+                color: #000000 !important;
+                border: 1px solid #000000 !important;
+                border-radius: 4px !important;
+                box-shadow: none !important;
+                font-size: 0.95rem !important;
+                margin-bottom: 15px !important;
+                padding: 8px !important;
+            }
+            
+            .table-container {
+                background: #ffffff !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                overflow: visible !important;
+                width: 100% !important;
+            }
+            .results-table {
+                width: 100% !important;
+                font-size: 0.85rem !important;
+                border-collapse: collapse !important;
+                border: 1px solid #000000 !important;
+            }
+            .results-table th {
+                background-color: #f0f0f0 !important;
+                color: #000000 !important;
+                border: 1px solid #000000 !important;
+                padding: 8px 6px !important;
+                font-weight: bold !important;
+            }
+            .results-table td {
+                color: #000000 !important;
+                border: 1px solid #ababab !important;
+                padding: 7px 6px !important;
+                background: none !important;
+            }
+            
+            .pos-cell { color: #000000 !important; font-size: 0.85rem !important; }
+            .num-cell {
+                background: none !important;
+                border: none !important;
+                color: #000000 !important;
+                font-weight: bold !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                text-align: center !important;
+                width: auto !important;
+                margin: 0 !important;
+            }
+            
+            .hora-cell, .total-cell { color: #000000 !important; font-weight: bold !important; }
+            .status-dnf { color: #b30000 !important; font-weight: bold !important; }
+            .status-dns { color: #d97706 !important; font-weight: bold !important; }
+            
+            .cat-badge {
+                background: none !important;
+                color: #000000 !important;
+                border: 1px solid #666666 !important;
+                padding: 1px 4px !important;
+                font-size: 0.75rem !important;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- CONTENEDOR SUPERIOR CON LOGOS Y TÍTULOS -->
     <div class="header-container">
-        <div class="logo-box logo-left">
-            <img src="1.png" alt="Baja Atacama Logo Principal">
-        </div>
-        
+        <div class="logo-box logo-left"><img src="1.png" alt="Logo Principal"></div>
         <div class="title-box">
             <h1>Baja Atacama Series</h1>
             <p>Control de Tiempos Oficiales en Vivo</p>
         </div>
-
         <div class="sync-container">
-            <button class="refresh-btn" onclick="cargarDatosDesdeGoogle()">🔄 Sincronizar Ahora</button>
+            <button class="refresh-btn" onclick="cargarDatosDesdeGoogle()">🔄 Sincronizar</button>
+            <button class="pdf-btn" onclick="window.print()">📥 Exportar PDF</button>
             <span id="sync-status" class="sync-alert">✔ Sincronizado</span>
         </div>
-
-        <div class="logo-box logo-right">
-            <img src="2.png" alt="Baja Atacama Logo Secundario">
-        </div>
+        <div class="logo-box logo-right"><img src="2.png" alt="Logo Secundario"></div>
     </div>
 
-    <!-- SECCIÓN DE FILTROS -->
     <div class="filter-section-title">Filtrar por Categoría</div>
     <div class="filter-container" id="category-filters">
         <button class="filter-btn active" onclick="setCategoria('TODOS')">Todos</button>
@@ -272,53 +348,47 @@
         <button class="filter-btn stage-btn active" onclick="setEtapa('TOTAL')">Total Provisional</button>
         <button class="filter-btn stage-btn" onclick="setEtapa('1EE')">1° EE</button>
         <button class="filter-btn stage-btn" onclick="setEtapa('2EE')">2° EE</button>
+        <button class="filter-btn stage-btn" style="border-color: rgba(162, 155, 254, 0.4);" onclick="setEtapa('LARGADA')">🏁 Grilla Largada</button>
     </div>
 
     <div class="general-banner" id="banner-text">Final General Provisional</div>
 
-    <!-- TABLA DE RESULTADOS -->
     <div class="table-container">
         <table class="results-table">
-            <thead>
-                <tr>
-                    <th>Pos</th>
-                    <th>N°</th>
-                    <th>Piloto</th>
-                    <th>Cat</th>
-                    <th id="th-ee1">1EE</th>
-                    <th id="th-ee2">2EE</th>
-                    <th id="th-total">Total</th>
-                </tr>
-            </thead>
+            <thead id="table-head"></thead>
             <tbody id="table-body">
                 <tr><td colspan="7" class="loading">Cargando cronometrajes...</td></tr>
             </tbody>
         </table>
     </div>
 
-    <!-- CONTENEDOR LOGO INFERIOR EN MÓVIL -->
-    <div class="mobile-footer-logo">
-        <img src="2.png" alt="Baja Atacama Logo Secundario Móvil">
-    </div>
+    <div class="mobile-footer-logo"><img src="2.png" alt="Logo Inferior Oficial"></div>
 
     <script>
-        const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQoFKsuKTYMSXsAAztTFb2rL9AmulXDloYyyQ0TKfqI0XvMjp5mGqSUxNUyQFtUnW65q-98NEUrQ8Nt/pub?gid=286931895&single=true&output=csv";
+        const CRONOMETRAJE_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQoFKsuKTYMSXsAAztTFb2rL9AmulXDloYyyQ0TKfqI0XvMjp5mGqSUxNUyQFtUnW65q-98NEUrQ8Nt/pub?gid=286931895&single=true&output=csv";
+        const LARGADA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHtqvAa5_kQgc2rI26-9tyW83U8kv7WNW5Hzi6k6y0iS3js7w_fKbL-ihPW4AviDY5ncrQFhej_AYq/pub?gid=0&single=true&output=csv";
 
         let pilotosMaster = [];
+        let pilotosLargada = [];
         let categoriasDetectadas = new Set();
         let categoriaActual = 'TODOS';
         let etapaActual = 'TOTAL';
 
         async function cargarDatosDesdeGoogle() {
             try {
-                const response = await fetch(SHEET_CSV_URL + "&cachebust=" + new Date().getTime());
-                if (!response.ok) throw new Error("No se pudo obtener respuesta de Google Sheets");
-                
+                const response = await fetch(CRONOMETRAJE_URL + "&cachebust=" + new Date().getTime());
+                if (!response.ok) throw new Error("No se pudo obtener la pestaña de Tiempos");
                 const dataText = await response.text();
-                pilotosMaster = csvToArray(dataText);
+                pilotosMaster = csvToArray(dataText, false);
                 
-                if (pilotosMaster.length === 0) {
-                    document.getElementById('table-body').innerHTML = `<tr><td colspan='7' class='error-msg'>⚠️ Estructura incorrecta o sin datos válidos en la hoja.</td></tr>`;
+                const responseLargada = await fetch(LARGADA_URL + "&cachebust=" + new Date().getTime());
+                if (responseLargada.ok) {
+                    const dataLargadaText = await responseLargada.text();
+                    pilotosLargada = csvToArray(dataLargadaText, true);
+                }
+
+                if (pilotosMaster.length === 0 && pilotosLargada.length === 0) {
+                    document.getElementById('table-body').innerHTML = `<tr><td colspan='7' class='error-msg'>⚠️ Archivos sin datos válidos configurados.</td></tr>`;
                     return;
                 }
                 
@@ -326,60 +396,97 @@
                 mostrarAlertaSincronizacion();
                 renderizarTabla();
             } catch (error) {
-                console.error("Error crítico de sincronización:", error);
-                document.getElementById('table-body').innerHTML = `<tr><td colspan='7' class='error-msg'>❌ Error de sincronización. Verifica tu conexión o el enlace de publicación.</td></tr>`;
+                console.error(error);
+                document.getElementById('table-body').innerHTML = `<tr><td colspan='7' class='error-msg'>❌ Error de sincronización.</td></tr>`;
             }
         }
 
-        function csvToArray(text) {
+        function csvToArray(text, esLargada) {
             const lines = text.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
-            const result = [];
-            
-            let headerIdx = -1;
-            let separator = ',';
+            if (lines.length === 0) return [];
 
-            for (let i = 0; i < lines.length; i++) {
-                const lineUpper = lines[i].toUpperCase();
-                if (lineUpper.includes('PILOTO') && (lineUpper.includes('N°') || lineUpper.includes('NUMERO') || lineUpper.includes('Nº'))) {
-                    headerIdx = i;
-                    separator = lines[i].includes(';') ? ';' : ',';
-                    break;
+            const result = [];
+            let headerIdx = 0;
+            let separator = text.includes(';') ? ';' : ',';
+
+            if (!esLargada) {
+                for (let i = 0; i < lines.length; i++) {
+                    const cleanLine = lines[i].toUpperCase().replace(/[\s"'`]/g, '');
+                    if (cleanLine.includes('PILOTO') && (cleanLine.includes('N°') || cleanLine.includes('NUMERO') || cleanLine.includes('CAT'))) {
+                        headerIdx = i;
+                        separator = lines[i].includes(';') ? ';' : ',';
+                        break;
+                    }
+                }
+            } else {
+                for (let i = 0; i < Math.min(lines.length, 3); i++) {
+                    const cleanLine = lines[i].toUpperCase().replace(/[\s"'`]/g, '');
+                    if (cleanLine.includes('PILOTO') || cleanLine.includes('N°') || cleanLine.includes('NUMERO') || cleanLine.includes('CAT') || cleanLine.includes('HORA')) {
+                        headerIdx = i;
+                        separator = lines[i].includes(';') ? ';' : ',';
+                        break;
+                    }
                 }
             }
 
-            if (headerIdx === -1) return [];
-
             const headers = lines[headerIdx].split(separator).map(h => h.trim().toUpperCase().replace(/["']/g, ""));
             
-            const idxNum = headers.findIndex(h => h.includes('N°') || h.includes('NUMERO') || h.includes('Nº') || h === 'N');
-            const idxPiloto = headers.findIndex(h => h.includes('PILOTO'));
-            const idxCat = headers.findIndex(h => h.includes('CAT'));
-            const idxEE1 = headers.findIndex(h => h.includes('1EE') || h.includes('1° EE') || h.includes('EE1'));
-            const idxEE2 = headers.findIndex(h => h.includes('2EE') || h.includes('2° EE') || h.includes('EE2'));
+            let idxNum = headers.findIndex(h => h.includes('N°') || h.includes('NUMERO') || h.includes('Nº') || h === 'N');
+            let idxPiloto = headers.findIndex(h => h.includes('PILOTO'));
+            let idxCat = headers.findIndex(h => h.includes('CAT'));
 
-            categoriasDetectadas.clear();
+            if (idxNum === -1) idxNum = 1;
+            if (idxPiloto === -1) idxPiloto = 2;
+            if (idxCat === -1) idxCat = 3;
 
-            for (let i = headerIdx + 1; i < lines.length; i++) {
-                const cols = lines[i].split(separator).map(c => c.trim().replace(/["']/g, ""));
-                
-                const vehiculoNum = cols[idxNum] || "";
-                if (!vehiculoNum || vehiculoNum === "-" || isNaN(vehiculoNum.replace(/[^0-9]/g, ''))) continue;
+            if(esLargada) {
+                let idxHora = headers.findIndex(h => h.includes('HORA') || h.includes('HR') || h.includes('LARGADA'));
+                if (idxHora === -1) idxHora = 0;
 
-                const pilotoNombre = cols[idxPiloto] || "";
-                if (!pilotoNombre || pilotoNombre.toUpperCase().includes("PILOTO")) continue;
+                for (let i = headerIdx + 1; i < lines.length; i++) {
+                    const cols = lines[i].split(separator).map(c => c.trim().replace(/["']/g, ""));
+                    let vehiculoNum = cols[idxNum] || "";
+                    
+                    if (!vehiculoNum || vehiculoNum === "-" || vehiculoNum.toUpperCase().includes("PILOTO") || vehiculoNum.toUpperCase().includes("ORDEN") || vehiculoNum.toUpperCase().includes("N°")) continue;
+                    if (cols[idxPiloto] && cols[idxPiloto].toUpperCase().includes("PILOTO")) continue;
 
-                let categoriaOriginal = idxCat !== -1 && cols[idxCat] ? cols[idxCat] : "SIN CAT";
-                if (categoriaOriginal && categoriaOriginal !== "-") {
-                    categoriasDetectadas.add(categoriaOriginal);
+                    result.push({ 
+                        num: vehiculoNum, 
+                        piloto: cols[idxPiloto] || "Piloto Desconocido", 
+                        cat: cols[idxCat] || "SIN CAT",
+                        hora: cols[idxHora] || "--:--:--"
+                    });
                 }
+            } else {
+                let idxEE1 = headers.findIndex(h => h.includes('1EE') || h.includes('EE1') || h.includes('1°'));
+                let idxEE2 = headers.findIndex(h => h.includes('2EE') || h.includes('EE2') || h.includes('2°'));
 
-                result.push({
-                    num: vehiculoNum,
-                    piloto: pilotoNombre,
-                    cat: categoriaOriginal,
-                    ee1: idxEE1 !== -1 && cols[idxEE1] ? cols[idxEE1] : "",
-                    ee2: idxEE2 !== -1 && cols[idxEE2] ? cols[idxEE2] : ""
-                });
+                if(idxEE1 === -1) idxEE1 = 4;
+                if(idxEE2 === -1) idxEE2 = 5;
+
+                categoriasDetectadas.clear();
+
+                for (let i = headerIdx + 1; i < lines.length; i++) {
+                    const cols = lines[i].split(separator).map(c => c.trim().replace(/["']/g, ""));
+                    let vehiculoNum = cols[idxNum] || "";
+                    
+                    if (!vehiculoNum || vehiculoNum === "-" || vehiculoNum.toUpperCase().includes("PILOTO") || vehiculoNum.toUpperCase().includes("N°")) continue;
+                    if (cols[idxPiloto] && cols[idxPiloto].toUpperCase().includes("PILOTO")) continue;
+
+                    let catOriginal = cols[idxCat] || "SIN CAT";
+                    
+                    if (catOriginal && catOriginal !== "-" && catOriginal.toUpperCase() !== "CAT") {
+                        categoriasDetectadas.add(catOriginal);
+                    }
+
+                    result.push({
+                        num: vehiculoNum,
+                        piloto: cols[idxPiloto] || "Piloto",
+                        cat: catOriginal,
+                        ee1: cols[idxEE1] || "",
+                        ee2: cols[idxEE2] || ""
+                    });
+                }
             }
             return result;
         }
@@ -388,7 +495,6 @@
             const container = document.getElementById('category-filters');
             let html = `<button class="filter-btn ${categoriaActual === 'TODOS' ? 'active' : ''}" onclick="setCategoria('TODOS')">Todos</button>`;
             const sortedCategories = Array.from(categoriasDetectadas).sort();
-            
             sortedCategories.forEach(cat => {
                 html += `<button class="filter-btn ${categoriaActual === cat ? 'active' : ''}" onclick="setCategoria('${cat}')">${cat}</button>`;
             });
@@ -419,44 +525,57 @@
             return [hrs, mins, seconds].map(v => v < 10 ? "0" + v : v).join(":");
         }
 
-        function getValorEtapaFiltro(p) {
+        function getValorEtapaFilt(p) {
             if (etapaActual === '1EE') return p.ee1.toUpperCase().trim();
             if (etapaActual === '2EE') return p.ee2.toUpperCase().trim();
             
             const e1 = p.ee1.toUpperCase().trim();
             const e2 = p.ee2.toUpperCase().trim();
+            
             if (e1 === 'DNF' || e2 === 'DNF') return 'DNF';
             if (e1 === 'DNS' || e2 === 'DNS') return 'DNS';
 
             const t1 = timeToSeconds(p.ee1);
             const t2 = timeToSeconds(p.ee2);
-            
-            let sumaSegundos = 0;
+            let deliberateTotal = 0;
             let tieneTiempos = false;
 
-            if (t1 !== null) { sumaSegundos += t1; tieneTiempos = true; }
-            if (t2 !== null) { sumaSegundos += t2; tieneTiempos = true; }
+            if (t1 !== null) { deliberateTotal += t1; tieneTiempos = true; }
+            if (t2 !== null) { deliberateTotal += t2; tieneTiempos = true; }
             
-            if (tieneTiempos) return secondsToTime(sumaSegundos);
-            return "-";
+            return tieneTiempos ? secondsToTime(deliberateTotal) : "-";
+        }
+
+        function getSegundosAcumulados(p) {
+            if (etapaActual === '1EE') return timeToSeconds(p.ee1) || 9999999;
+            if (etapaActual === '2EE') return timeToSeconds(p.ee2) || 9999999;
+
+            const t1 = timeToSeconds(p.ee1);
+            const t2 = timeToSeconds(p.ee2);
+            if (t1 === null && t2 === null) return 9999999;
+            return (t1 || 0) + (t2 || 0);
         }
 
         function ordenarPilotos(a, b) {
-            const valA = getValorEtapaFiltro(a); 
-            const valB = getValorEtapaFiltro(b); 
-
-            const getPeso = (val) => {
-                if (val === '-' || val === '') return 1;    
+            const valA = getValorEtapaFilt(a); 
+            const valB = getValorEtapaFilt(b); 
+            
+            const getPesoJerarquia = (val) => {
+                if (val === 'DNF') return 1;  
                 if (val === 'DNS') return 2;  
-                if (val === 'DNF') return 3;  
-                return 0;                     
+                if (val === '-' || val === '') return 3; 
+                return 0; 
             };
 
-            const pesoA = getPeso(valA);
-            const pesoB = getPeso(valB);
+            const pesoA = getPesoJerarquia(valA);
+            const pesoB = getPesoJerarquia(valB);
 
             if (pesoA !== pesoB) return pesoA - pesoB; 
-            return valA.localeCompare(valB);
+
+            const tiempoA = getSegundosAcumulados(a);
+            const tiempoB = getSegundosAcumulados(b);
+            
+            return tiempoA - tiempoB;
         }
 
         function setCategoria(cat) {
@@ -471,10 +590,16 @@
         function setEtapa(etapa) {
             etapaActual = etapa;
             const botones = document.querySelectorAll('#stage-filters .stage-btn');
+            
             botones[0].classList.toggle('active', etapa === 'TOTAL');
             botones[1].classList.toggle('active', etapa === '1EE');
             botones[2].classList.toggle('active', etapa === '2EE');
+            botones[3].classList.toggle('active-largada', etapa === 'LARGADA');
             
+            const banner = document.getElementById('banner-text');
+            if (etapa === 'LARGADA') banner.classList.add('banner-largada');
+            else banner.classList.remove('banner-largada');
+
             actualizarBanner();
             renderizarTabla();
         }
@@ -483,61 +608,128 @@
             let textoEtapa = "Clasificación General";
             if(etapaActual === '1EE') textoEtapa = "Clasificación 1° EE";
             if(etapaActual === '2EE') textoEtapa = "Clasificación 2° EE";
+            if(etapaActual === 'LARGADA') textoEtapa = "🚩 Orden de Largada Oficial";
             
             document.getElementById('banner-text').innerText = `${textoEtapa} - ${categoriaActual}`;
         }
 
         function renderizarTabla() {
+            const thead = document.getElementById('table-head');
             const tbody = document.getElementById('table-body');
             tbody.innerHTML = "";
 
-            if(pilotosMaster.length === 0) return;
+            if (etapaActual === 'LARGADA') {
+                thead.innerHTML = `
+                    <tr>
+                        <th class="col-largada-active" style="width: 8%">Fila</th>
+                        <th style="width: 15%">Hora</th>
+                        <th style="width: 12%">N°</th>
+                        <th>Piloto</th>
+                        <th style="width: 20%">Categoría</th>
+                    </tr>
+                `;
 
-            document.getElementById('th-ee1').className = etapaActual === '1EE' ? 'col-active' : '';
-            document.getElementById('th-ee2').className = etapaActual === '2EE' ? 'col-active' : '';
-            document.getElementById('th-total').className = etapaActual === 'TOTAL' ? 'col-active' : '';
+                let lista = pilotosLargada.filter(p => {
+                    if (categoriaActual === 'TODOS') return true;
+                    return p.cat.trim().toUpperCase() === categoriaActual.trim().toUpperCase();
+                });
 
-            let lista = pilotosMaster.filter(p => {
-                if (categoriaActual === 'TODOS') return true;
-                return p.cat === categoriaActual;
-            });
-            
-            lista.sort((a, b) => ordenarPilotos(a, b));
-
-            lista.forEach((item, index) => {
-                let rowHtml = `<tr>`;
-                
-                let valorCriterio = getValorEtapaFiltro(item);
-                let posDisplay = ['DNF', 'DNS', '-', ''].includes(valorCriterio) ? '-' : (index + 1);
-
-                let e1 = item.ee1.toUpperCase().trim();
-                let e2 = item.ee2.toUpperCase().trim();
-                let totalAcumulado = 'DNF';
-                if (e1 !== 'DNF' && e2 !== 'DNF') {
-                    if (e1 === 'DNS' || e2 === 'DNS') {
-                        totalAcumulado = 'DNS';
-                    } else {
-                        let t1 = timeToSeconds(item.ee1);
-                        let t2 = timeToSeconds(item.ee2);
-                        if (t1 !== null || t2 !== null) {
-                            totalAcumulado = secondsToTime((t1 || 0) + (t2 || 0));
-                        } else {
-                            totalAcumulado = '-';
-                        }
-                    }
+                if (lista.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan='5' class='loading'>No hay pilotos asignados a Largada en esta categoría.</td></tr>`;
+                    return;
                 }
 
-                rowHtml += `<td class="pos-cell">${posDisplay}</td>`;
-                rowHtml += `<td><div class="num-cell">${item.num}</div></td>`;
-                rowHtml += `<td>${item.piloto}</td>`;
-                rowHtml += `<td>${item.cat}</td>`;
-                rowHtml += `<td class="${etapaActual === '1EE' ? 'col-active' : ''} ${getStatusClass(item.ee1)}">${item.ee1 || "-"}</td>`;
-                rowHtml += `<td class="${etapaActual === '2EE' ? 'col-active' : ''} ${getStatusClass(item.ee2)}">${item.ee2 || "-"}</td>`;
-                rowHtml += `<td class="total-cell ${etapaActual === 'TOTAL' ? 'col-active' : ''} ${getStatusClass(totalAcumulado)}">${totalAcumulado}</td>`;
-                rowHtml += `</tr>`;
+                lista.forEach((item, index) => {
+                    let catUpper = item.cat.toUpperCase().trim();
+                    let letraCat = catUpper.charAt(0);
+                    let badgeClass = "badge-other";
+                    
+                    if (letraCat === 'M' || letraCat === 'Q') badgeClass = "badge-moto";
+                    else if (letraCat === 'T') badgeClass = "badge-t";
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="pos-cell col-largada-active">${index + 1}</td>
+                            <td class="hora-cell">${item.hora}</td>
+                            <td><div class="num-cell">${item.num}</div></td>
+                            <td>${item.piloto}</td>
+                            <td><span class="cat-badge ${badgeClass}">${item.cat}</span></td>
+                        </tr>
+                    `;
+                });
+
+            } else {
+                let headersHtml = `
+                    <tr>
+                        <th>Pos</th>
+                        <th>N°</th>
+                        <th>Piloto</th>
+                        <th>Cat</th>
+                `;
                 
-                tbody.innerHTML += rowHtml;
-            });
+                if (etapaActual === 'TOTAL' || etapaActual === '1EE') {
+                    headersHtml += `<th id="th-ee1">1EE</th>`;
+                }
+                if (etapaActual === 'TOTAL' || etapaActual === '2EE') {
+                    headersHtml += `<th id="th-ee2">2EE</th>`;
+                }
+                if (etapaActual === 'TOTAL') {
+                    headersHtml += `<th id="th-total">Total</th>`;
+                }
+                headersHtml += `</tr>`;
+                thead.innerHTML = headersHtml;
+
+                if(pilotosMaster.length === 0) return;
+
+                if (document.getElementById('th-ee1')) document.getElementById('th-ee1').className = etapaActual === '1EE' ? 'col-active' : '';
+                if (document.getElementById('th-ee2')) document.getElementById('th-ee2').className = etapaActual === '2EE' ? 'col-active' : '';
+                if (document.getElementById('th-total')) document.getElementById('th-total').className = etapaActual === 'TOTAL' ? 'col-active' : '';
+
+                let lista = pilotosMaster.filter(p => {
+                    if (categoriaActual === 'TODOS') return true;
+                    return p.cat.trim().toUpperCase() === categoriaActual.trim().toUpperCase();
+                });
+                
+                lista.sort((a, b) => ordenarPilotos(a, b));
+
+                lista.forEach((item, index) => {
+                    let valorCriterio = getValorEtapaFilt(item);
+                    let posDisplay = ['DNF', 'DNS', '-', ''].includes(valorCriterio) ? '-' : (index + 1);
+
+                    let e1 = item.ee1.toUpperCase().trim();
+                    let e2 = item.ee2.toUpperCase().trim();
+                    let totalAcumulado = 'DNF';
+                    if (e1 !== 'DNF' && e2 !== 'DNF') {
+                        if (e1 === 'DNS' || e2 === 'DNS') totalAcumulado = 'DNS';
+                        else {
+                            let t1 = timeToSeconds(item.ee1);
+                            let t2 = timeToSeconds(item.ee2);
+                            totalAcumulado = (t1 !== null || t2 !== null) ? secondsToTime((t1 || 0) + (t2 || 0)) : '-';
+                        }
+                    }
+
+                    let rowHtml = `
+                        <tr>
+                            <td class="pos-cell">${posDisplay}</td>
+                            <td><div class="num-cell">${item.num}</div></td>
+                            <td>${item.piloto}</td>
+                            <td>${item.cat}</td>
+                    `;
+                    
+                    if (etapaActual === 'TOTAL' || etapaActual === '1EE') {
+                        rowHtml += `<td class="${etapaActual === '1EE' ? 'col-active' : ''} ${getStatusClass(item.ee1)}">${item.ee1 || "-"}</td>`;
+                    }
+                    if (etapaActual === 'TOTAL' || etapaActual === '2EE') {
+                        rowHtml += `<td class="${etapaActual === '2EE' ? 'col-active' : ''} ${getStatusClass(item.ee2)}">${item.ee2 || "-"}</td>`;
+                    }
+                    if (etapaActual === 'TOTAL') {
+                        rowHtml += `<td class="total-cell ${etapaActual === 'TOTAL' ? 'col-active' : ''} ${getStatusClass(totalAcumulado)}">${totalAcumulado}</td>`;
+                    }
+                    rowHtml += `</tr>`;
+                    
+                    tbody.innerHTML += rowHtml;
+                });
+            }
         }
 
         function getStatusClass(value) {
