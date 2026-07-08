@@ -319,6 +319,175 @@
                 padding: 1px 4px !important;
                 font-size: 0.75rem !important;
             }
+
+            .search-wrapper, .ficha-piloto-container { display: none !important; }
+        }
+
+        /* ==========================================================================
+           ESTILOS DEL BUSCADOR DIRECTO Y FICHA INDIVIDUAL (AJUSTADA A 600x350)
+           ========================================================================= */
+        .search-wrapper {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto 20px auto;
+            padding: 0 10px;
+        }
+
+        .search-input-direct {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 0.95rem;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input-direct:focus {
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: var(--glow-shadow);
+        }
+
+        .ficha-piloto-container {
+            display: none;
+            background: linear-gradient(135deg, rgba(25, 25, 25, 0.98), rgba(15, 15, 15, 0.98));
+            border: 2px solid var(--accent-color);
+            border-radius: 16px;
+            padding: 22px;
+            max-width: 480px;
+            margin: 0 auto 25px auto;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 183, 3, 0.1);
+            position: relative;
+            overflow: hidden;
+            animation: slideDown 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-15px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .ficha-numero-gigante {
+            font-size: 5.8rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.03);
+            position: absolute;
+            top: -15px;
+            right: 15px;
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            user-select: none;
+            z-index: 1;
+        }
+
+        .ficha-header {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding-bottom: 16px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Contenedor adaptado estéticamente a la proporción rectangular 600x350 */
+        .ficha-foto-box {
+            width: 110px;
+            height: 64px; /* Mantiene la proporción exacta (~1.71) de la imagen original */
+            border-radius: 8px; /* Cambiado a esquinas suaves en lugar de círculo */
+            border: 2px solid var(--accent-color);
+            overflow: hidden;
+            background: #151515;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .ficha-foto-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Asegura el auto-encuadre perfecto */
+        }
+
+        .ficha-info-principal {
+            flex-grow: 1;
+        }
+
+        .ficha-nombre {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+            line-height: 1.2;
+            margin-bottom: 6px;
+        }
+
+        .ficha-badge-cat {
+            background: var(--accent-color);
+            color: #000;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        .ficha-tiempos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .tiempo-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
+            padding: 12px 4px;
+            text-align: center;
+        }
+
+        .tiempo-card-titulo {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .tiempo-card-valor {
+            font-size: 0.9rem;
+            font-weight: 700;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .btn-cerrar-ficha {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(255,255,255,0.7);
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: block;
+            margin: 16px auto 0 auto;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        .btn-cerrar-ficha:hover {
+            background: var(--dnf-color);
+            border-color: var(--dnf-color);
+            color: #fff;
         }
     </style>
 </head>
@@ -336,6 +505,43 @@
             <span id="sync-status" class="sync-alert">✔ Sincronizado</span>
         </div>
         <div class="logo-box logo-right"><img src="2.png" alt="Logo Secundario"></div>
+    </div>
+
+    <div class="search-wrapper">
+        <input type="text" id="buscador-piloto-numero" class="search-input-direct" 
+               placeholder="🔍 Buscar por número de piloto..." 
+               oninput="gestionarBuscadorFicha(this.value)">
+    </div>
+
+    <div id="ficha-individual-box" class="ficha-piloto-container">
+        <div class="ficha-numero-gigante" id="f-num-bg">00</div>
+        <div class="ficha-header">
+            <div class="ficha-foto-box">
+                <img id="f-foto-img" src="piloto/sf.png">
+            </div>
+            <div class="ficha-info-principal">
+                <div class="ficha-nombre" id="f-nombre-txt">Nombre Competidor</div>
+                <div>
+                    <span class="ficha-badge-cat" id="f-cat-txt">CATEGORÍA</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="ficha-tiempos-grid">
+            <div class="tiempo-card">
+                <div class="tiempo-card-titulo">1° Especial</div>
+                <div class="tiempo-card-valor" id="f-ee1-txt">--:--:--</div>
+            </div>
+            <div class="tiempo-card">
+                <div class="tiempo-card-titulo">2° Especial</div>
+                <div class="tiempo-card-valor" id="f-ee2-txt">--:--:--</div>
+            </div>
+            <div class="tiempo-card" style="border-color: rgba(0, 240, 255, 0.25);">
+                <div class="tiempo-card-titulo" style="color: var(--total-color)">Total Acum.</div>
+                <div class="tiempo-card-valor" id="f-total-txt" style="color: var(--total-color)">--:--:--</div>
+            </div>
+        </div>
+        <button class="btn-cerrar-ficha" onclick="cerrarFichaDirecta()">Ocultar Ficha</button>
     </div>
 
     <div class="filter-section-title">Filtrar por Categoría</div>
@@ -395,6 +601,9 @@
                 generarBotonesCategorias();
                 mostrarAlertaSincronizacion();
                 renderizarTabla();
+
+                let inputVal = document.getElementById('buscador-piloto-numero').value.trim();
+                if(inputVal !== "") { refreshFichaDataInLive(inputVal); }
             } catch (error) {
                 console.error(error);
                 document.getElementById('table-body').innerHTML = `<tr><td colspan='7' class='error-msg'>❌ Error de sincronización.</td></tr>`;
@@ -744,6 +953,89 @@
             cargarDatosDesdeGoogle();
             setInterval(cargarDatosDesdeGoogle, 30000);
         };
+
+        function gestionarBuscadorFicha(numeroBuscado) {
+            const cleanNum = numeroBuscado.trim().toLowerCase();
+            if (cleanNum === "") {
+                document.getElementById('ficha-individual-box').style.display = 'none';
+                return;
+            }
+            refreshFichaDataInLive(cleanNum);
+        }
+
+        function refreshFichaDataInLive(numeroString) {
+            let pData = pilotosMaster.find(p => p.num.toString().toLowerCase() === numeroString);
+            let pLargada = pilotosLargada.find(p => p.num.toString().toLowerCase() === numeroString);
+            
+            const imgElement = document.getElementById('f-foto-img');
+
+            if (pData) {
+                document.getElementById('f-num-bg').innerText = pData.num;
+                document.getElementById('f-nombre-txt').innerText = pData.piloto;
+                document.getElementById('f-cat-txt').innerText = pData.cat;
+                
+                imgElement.src = `piloto/${pData.num}.png`;
+                imgElement.onerror = function() { 
+                    this.onerror = null; 
+                    this.src = 'piloto/sf.png'; 
+                };
+
+                document.getElementById('f-ee1-txt').innerText = pData.ee1 || '-';
+                document.getElementById('f-ee1-txt').className = `tiempo-card-valor ${getStatusClass(pData.ee1)}`;
+                
+                document.getElementById('f-ee2-txt').innerText = pData.ee2 || '-';
+                document.getElementById('f-ee2-txt').className = `tiempo-card-valor ${getStatusClass(pData.ee2)}`;
+
+                let e1 = pData.ee1.toUpperCase().trim();
+                let e2 = pData.ee2.toUpperCase().trim();
+                let totalCalculado = 'DNF';
+                if (e1 !== 'DNF' && e2 !== 'DNF') {
+                    if (e1 === 'DNS' || e2 === 'DNS') totalCalculado = 'DNS';
+                    else {
+                        let t1 = timeToSeconds(pData.ee1);
+                        let t2 = timeToSeconds(pData.ee2);
+                        totalCalculado = (t1 !== null || t2 !== null) ? secondsToTime((t1 || 0) + (t2 || 0)) : '-';
+                    }
+                }
+                
+                document.getElementById('f-total-txt').innerText = totalCalculado;
+                document.getElementById('f-total-txt').className = `tiempo-card-valor ${getStatusClass(totalCalculado)}`;
+                if(totalCalculado !== 'DNF' && totalCalculado !== 'DNS' && totalCalculado !== '-') {
+                    document.getElementById('f-total-txt').style.color = 'var(--total-color)';
+                } else {
+                    document.getElementById('f-total-txt').style.color = '';
+                }
+
+                document.getElementById('ficha-individual-box').style.display = 'block';
+
+            } else if (pLargada) {
+                document.getElementById('f-num-bg').innerText = pLargada.num;
+                document.getElementById('f-nombre-txt').innerText = pLargada.piloto;
+                document.getElementById('f-cat-txt').innerText = pLargada.cat;
+                
+                imgElement.src = `piloto/${pLargada.num}.png`;
+                imgElement.onerror = function() { 
+                    this.onerror = null; 
+                    this.src = 'piloto/sf.png'; 
+                };
+                
+                document.getElementById('f-ee1-txt').innerText = 'Grilla';
+                document.getElementById('f-ee1-txt').className = 'tiempo-card-valor';
+                document.getElementById('f-ee2-txt').innerText = pLargada.hora;
+                document.getElementById('f-ee2-txt').className = 'tiempo-card-valor hora-cell';
+                document.getElementById('f-total-txt').innerText = '--:--:--';
+                document.getElementById('f-total-txt').style.color = '';
+                
+                document.getElementById('ficha-individual-box').style.display = 'block';
+            } else {
+                document.getElementById('ficha-individual-box').style.display = 'none';
+            }
+        }
+
+        function cerrarFichaDirecta() {
+            document.getElementById('buscador-piloto-numero').value = "";
+            document.getElementById('ficha-individual-box').style.display = 'none';
+        }
     </script>
 </body>
 </html>
